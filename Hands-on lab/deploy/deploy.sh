@@ -6,8 +6,8 @@ templateUri=https://raw.githubusercontent.com/shoegazerpt/MCW-Serverless-archite
 tenantId=$(az account show --query tenantId -o tsv)
 userId=$(az ad signed-in-user show --query objectId -o tsv)
 
-echo $rgName $rgLocation $templateFile
+echo $rgName $rgLocation $templateUri
 
-az group deployment create -n deploy -g $rgName --template-uri $templateFile --parameters "{\"tenantId\":{\"value\":\"$tenantId\"},\"userId\":{\"value\":\"$userId\"}}"
+az group deployment create -n deploy -g $rgName --template-uri $templateUri --parameters "{\"tenantId\":{\"value\":\"$tenantId\"},\"userId\":{\"value\":\"$userId\"}}"
 
 # functionapp settings
