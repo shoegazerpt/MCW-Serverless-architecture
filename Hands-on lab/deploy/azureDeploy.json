@@ -18,17 +18,15 @@
     "variables": {
         "safeRgName": "[uniqueString(resourceGroup().name)]",
         "storageAccount": "[concat(variables('safeRgName'), 'storage')]",
-        "cosmosDbName": "[concat(variables('safeRgName'), 'cosmos')]",
-        "eventGridTopicName": "[concat(variables('safeRgName'), 'eventGrid')]",
-        "computerVisionName": "[concat(variables('safeRgName'), 'vision')]",
-        "functionHostingPlanName": "[concat(variables('safeRgName'), 'plan')]",
+        "cosmosDbName": "[concat(variables('safeRgName'), '-cosmos')]",
+        "eventGridTopicName": "[concat(variables('safeRgName'), '-eventGrid')]",
+        "computerVisionName": "[concat(variables('safeRgName'), '-vision')]",
+        "functionHostingPlanName": "[concat(variables('safeRgName'), '-plan')]",
         "functionTollBoothName": "[concat(variables('safeRgName'), '-TollBoothFunctionApp')]",
         "functionEventsName": "[concat(variables('safeRgName'), '-TollBoothEvents')]",
         "keyVaultName": "[concat(variables('safeRgName'), '-vault')]",
         
-        
-        "cosmosUri": "https://btf2020labs.blob.core.windows.net/labs/serverless/deploy/cosmos.json",
-        "functionsUri": "https://btf2020labs.blob.core.windows.net/labs/serverless/deploy/functions.json"
+        "cosmosUri": "https://raw.githubusercontent.com/shoegazerpt/MCW-Serverless-architecture/btf2020/Hands-on%20lab/deploy/cosmos.json"
     },
     "resources": [
         {
@@ -56,24 +54,6 @@
                 },
                 "parameters": {
                     "cosmosDbName": { "value": "[variables('cosmosDbName')]"}
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "functions",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[equals(1,1)]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                  "uri":"[variables('functionsUri')]",
-                  "contentVersion":"1.0.0.0"
-                },
-                "parameters": {
-                    "functionHostingPlanName": { "value": "[variables('functionHostingPlanName')]"},
-                    "functionTollBoothName": { "value": "[variables('functionTollBoothName')]"},
-                    "functionEventsName": { "value": "[variables('functionEventsName')]"}
                 }
             }
         },
@@ -117,48 +97,7 @@
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~2"
-                        },
-                        {
-                            "name": "computerVisionApiUrl",
-                            "value": "[concat('https://', variables('computerVisionName'), '.cognitiveservices.azure.com/vision/v2.0/ocr')]"
-                        },
-                        {
-                            "name": "computerVisionApiKey",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'computerVisionApiKey')).secretUriWithVersion, ')')]"
-                        },
-                        {
-                            "name": "eventGridTopicEndpoint",
-                            "value": "[reference(variables('eventGridTopicName')).endpoint]"
-                        },
-                        {
-                            "name": "eventGridTopicKey",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'eventGridTopicKey')).secretUriWithVersion, ')')]"
-                        },
-                        {
-                            "name": "cosmosDBEndPointUrl",
-                            "value": "[reference('cosmos').outputs.cosmosUri.value]"
-                        },
-                        {
-                            "name": "cosmosDBAuthorizationKey",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'cosmosDBAuthorizationKey')).secretUriWithVersion, ')')]"
-                        },
-                        {
-                            "name": "cosmosDBDatabaseId",
-                            "value": "LicensePlates"
-                        },
-                        {
-                            "name": "cosmosDBCollectionId",
-                            "value": "Processed"
-                        },
-                        {
-                            "name": "exportCsvContainerName",
-                            "value": "export"
-                        },
-                        {
-                            "name": "blobStorageConnection",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'blobStorageConnection')).secretUriWithVersion, ')')]"
-                        }
-                        
+                        }            
                     ]
                 },
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('functionHostingPlanName'))]",
@@ -198,7 +137,6 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
-            "dependsOn": ["[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]" ],
             "name": "[variables('functionHostingPlanName')]",
             "location": "[resourceGroup().location]",
             "kind": "linux",
@@ -223,7 +161,8 @@
                 "[resourceId('Microsoft.Resources/deployments', 'cosmos')]",
                 "[resourceId('Microsoft.CognitiveServices/accounts', variables('computerVisionName'))]",
                 "[resourceId('Microsoft.EventGrid/topics', variables('eventGridTopicName'))]",
-                "[resourceId('Microsoft.Resources/deployments', 'functions')]"
+                "[resourceId('Microsoft.Web/sites', variables('functionEventsName'))]",
+                "[resourceId('Microsoft.Web/sites', variables('functionTollBoothName'))]"
             ],
             "properties": {
                 "enabledForDeployment": true,
@@ -345,6 +284,45 @@
         
     ],
     "outputs": {
-        
+        "computerVisionApiUrl": {
+           "type": "string",
+           "value": "[concat('https://', variables('computerVisionName'), '.cognitiveservices.azure.com/vision/v2.0/ocr')]"
+        },
+        "computerVisionApiKey": {
+           "type": "string",
+           "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'computerVisionApiKey')).secretUriWithVersion, ')')]"
+        },
+        "eventGridTopicEndpoint": {
+           "type": "string",
+           "value": "[reference(variables('eventGridTopicName')).endpoint]"
+        },
+        "eventGridTopicKey": {
+           "type": "string",
+           "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'eventGridTopicKey')).secretUriWithVersion, ')')]"
+        },
+        "cosmosDBEndPointUrl": {
+           "type": "string",
+           "value": "[reference('cosmos').outputs.cosmosUri.value]"
+        },
+        "cosmosDBAuthorizationKey": {
+           "type": "string",
+           "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'cosmosDBAuthorizationKey')).secretUriWithVersion, ')')]"
+        },
+        "cosmosDBDatabaseId": {
+           "type": "string",
+           "value": "LicensePlates"
+        },
+        "cosmosDBCollectionId": {
+           "type": "string",
+           "value": "Processed"
+        },
+        "exportCsvContainerName": {
+           "type": "string",
+           "value": "export"
+        },
+        "blobStorageConnection": {
+           "type": "string",
+           "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'blobStorageConnection')).secretUriWithVersion, ')')]"
+        }
     }
 }
