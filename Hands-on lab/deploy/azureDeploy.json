@@ -323,6 +323,14 @@
         "blobStorageConnection": {
            "type": "string",
            "value": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'blobStorageConnection')).secretUriWithVersion, ')')]"
+        },
+        "tollBoothFunctionName": {
+           "type": "string",
+           "value": "[variables('functionTollBoothName')]"
+        },
+        "eventsFunctionName": {
+           "type": "string",
+           "value": "[variables('functionEventsName')]"
         }
     }
 }
