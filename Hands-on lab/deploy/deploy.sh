@@ -13,6 +13,10 @@ echo "Creating deployment..."
 az group deployment create -n deploy -g $rgName --template-uri $templateUri --parameters "{\"tenantId\":{\"value\":\"$tenantId\"},\"userId\":{\"value\":\"$userId\"}}"
 
 echo ""
+echo "Creating deployment 2..."
+az group deployment create -n deploy -g $rgName --template-uri $templateUri --parameters "{\"tenantId\":{\"value\":\"$tenantId\"},\"userId\":{\"value\":\"$userId\"}}"
+
+echo ""
 echo "Getting outputs..."
 az group deployment show -n deploy -g $rgName --query properties.outputs > appsettings.json
 jq 'to_entries | map_values({ name: .key } + {slotSetting: false} + {value: .value.value})' appsettings.json > appsettings.txt
