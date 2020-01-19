@@ -39,7 +39,25 @@
             },
             "properties": {
                 "accountType": "Standard_LRS"
-            }
+            },
+            "resources": [
+                {
+                    "name": "default/images",
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "dependsOn": [
+                        "[variables('storageAccount')]"
+                    ]
+                },
+                {
+                    "name": "default/export",
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "dependsOn": [
+                        "[variables('storageAccount')]"
+                    ]
+                }
+            ]
         },
         {
             "apiVersion": "2017-05-10",
@@ -78,7 +96,7 @@
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-02-01",
             "name": "[variables('functionTollBoothName')]",
-            "kind": "functionapp,linux",
+            "kind": "functionapp",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('functionHostingPlanName'))]"
@@ -90,6 +108,18 @@
                 "name": "[variables('functionTollBoothName')]",
                 "siteConfig": {
                      "appSettings": [
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageAccount')),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageAccount')),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionTollBoothName'))]"
+                        },
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "dotnet"
@@ -121,6 +151,18 @@
                 "siteConfig": {
                      "appSettings": [
                         {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageAccount')),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageAccount')),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionEventsName'))]"
+                        },
+                        {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "node"
                         },
@@ -139,7 +181,7 @@
             "apiVersion": "2018-02-01",
             "name": "[variables('functionHostingPlanName')]",
             "location": "[resourceGroup().location]",
-            "kind": "linux",
+            "kind": "windows",
             "properties":{
                 "reserved": false
             },

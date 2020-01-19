@@ -32,7 +32,6 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/legal/intellec
   - [Solution architecture](#solution-architecture)
   - [Exercise 1: Azure data, storage, and serverless environment setup](#exercise-1-azure-data-storage-and-serverless-environment-setup)
     - [Task 1: Verify resources are created](#task-1-verify-resources-are-created)
-    - [Task 2: Provision the storage account containers](#task-2-provision-the-storage-account-containers)
     
   - [Exercise 2: Develop and publish the photo processing and data export functions](#exercise-2-develop-and-publish-the-photo-processing-and-data-export-functions)
     - [Task 4: Finish the ProcessImage function](#task-4-finish-the-processimage-function)
@@ -98,18 +97,6 @@ In the Azure Portal, navigate to the resource group where all of the resources h
 **Note**: The specific names of the resources will be slightly different than what you see in the screenshot based on the unique identities assigned.
 
 ![](2020-01-19-17-08-22.png)
-
-### Task 2: Provision the storage account containers
-
-1. Click the storage account
-
-2. Select **Containers** under **Blob Service** in the menu. Then select the **+ Container** button to add a new container. In the **Name** field, enter **images**, select **Private (no anonymous access)** for the public access level, then select **OK** to save.
-
-    ![In the Storage blade, under Settings, Containers is selected. In the Containers blade, the + (add icon) Container button is selected. Below, the Name field displays images, and the Public access level is set to Private (no anonymous access).](media/storage-new-container-images.png 'Storage and Containers blade')
-
-9. Repeat these steps to create a container named **export**.
-
-    ![In the Storage blade, under Settings, Containers is selected. In the Containers blade, the + (add icon) Container button is selected. Below, the Name field displays export, and the Public access level is set to Private (no anonymous access).](media/new-container-export.png 'Storage and Containers blade')
 
 ## Exercise 2: Develop and publish the photo processing and data export functions
 
