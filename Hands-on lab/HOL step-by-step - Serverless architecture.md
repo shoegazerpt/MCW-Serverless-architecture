@@ -34,8 +34,6 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/legal/intellec
     - [Task 1: Verify resources are created](#task-1-verify-resources-are-created)
     
   - [Exercise 2: Develop and publish the photo processing and data export functions](#exercise-2-develop-and-publish-the-photo-processing-and-data-export-functions)
-    - [Task 4: Finish the ProcessImage function](#task-4-finish-the-processimage-function)
-    - [Task 5: Publish the Function App from Visual Studio](#task-5-publish-the-function-app-from-visual-studio)
   - [Exercise 3: Create functions in the portal](#exercise-3-create-functions-in-the-portal)
     - [Task 1: Create function to save license plate data to Azure Cosmos DB](#task-1-create-function-to-save-license-plate-data-to-azure-cosmos-db)
     - [Task 2: Add an Event Grid subscription to the SavePlateData function](#task-2-add-an-event-grid-subscription-to-the-saveplatedata-function)
@@ -100,122 +98,21 @@ In the Azure Portal, navigate to the resource group where all of the resources h
 
 ## Exercise 2: Develop and publish the photo processing and data export functions
 
-Use Visual Studio and its integrated Azure Functions tooling to develop and debug the functions locally, and then publish them to Azure. The starter project solution, TollBooths, contains most of the code needed. You will add in the missing code before deploying to Azure.
+Your function, application settings and managed identity have already been deployed.
 
-Your function application settings and managed identity have already been pre-provisioned.
+1. Using a new tab or instance of your browser navigate to the Azure portal, <http://portal.azure.com>.
 
-### Help references
+2. Open the **ServerlessArchitecture** resource group, then select the Azure Function App to which you just published.
 
-|                                       |                                                                        |
-| ------------------------------------- | :--------------------------------------------------------------------: |
-| **Description**                       |                               **Links**                                |
-| Code and test Azure Functions locally | <https://docs.microsoft.com/azure/azure-functions/functions-run-local> |
-
-### Task 4: Finish the ProcessImage function
-
-There are a few components within the starter project that must be completed, marked as TODO in the code. The first set of TODO items we will address are in the ProcessImage function, the FindLicensePlateText class that calls the Computer Vision API, and finally the SendToEventGrid.cs class, which is responsible for sending processing results to the Event Grid topic you created earlier.
-
-> **Note:** Do **NOT** update the version of any NuGet package. This solution is built to function with the NuGet package versions currently defined within. Updating these packages to newer versions could cause unexpected results.
-
-1. Navigate to the **TollBooth** project (`C:\ServerlessMCW\MCW-Serverless-architecture-master\hands-on-lab\starter\TollBooth\TollBooth.sln`) using the Solution Explorer of Visual Studio.
-
-2. From the Visual Studio **View** menu, select **Task List**.
-
-    ![The Visual Studio Menu displays, with View and Task List selected.](media/vs-task-list-link.png 'Visual Studio Menu')
-
-3. There you will see a list of TODO tasks, where each task represents one line of code that needs to be completed.
-
-    ![A list of TODO tasks, including their description, project, file, and line number display.](media/vs-task-list.png 'TODO tasks')
-
-4. Open **ProcessImage.cs**. Notice that the Run method is decorated with the FunctionName attribute, which sets the name of the Azure Function to "ProcessImage". This is triggered by HTTP requests sent to it from the Event Grid service. You tell Event Grid that you want to get these notifications at your function's URL by creating an event subscription, which you will do in a later task, in which you subscribe to blob-created events. The function's trigger watches for new blobs being added to the images container of the storage account that was created in Exercise 1. The data passed to the function from the Event Grid notification includes the URL of the blob. That URL is in turn passed to the input binding to obtain the uploaded image from Blob storage.
-
-5. The following code represents the completed task in ProcessImage.cs:
-
-    ```csharp
-    // **TODO 1: Set the licensePlateText value by awaiting a new FindLicensePlateText.GetLicensePlate method.**
-
-    licensePlateText = await new FindLicensePlateText(log, _client).GetLicensePlate(licensePlateImage);
-    ```
-
-6. Open **FindLicensePlateText.cs**. This class is responsible for contacting the Computer Vision API to find and extract the license plate text from the photo, using OCR. Notice that this class also shows how you can implement a resilience pattern using [Polly](https://github.com/App-vNext/Polly), an open source .NET library that helps you handle transient errors. This is useful for ensuring that you do not overload downstream services, in this case, the Computer Vision API. This will be demonstrated later on when visualizing the Function's scalability.
-
-7. The following code represents the completed task in FindLicensePlateText.cs:
-
-    ```csharp
-    // TODO 2: Populate the below two variables with the correct AppSettings properties.
-    var uriBase = Environment.GetEnvironmentVariable("computerVisionApiUrl");
-    var apiKey = Environment.GetEnvironmentVariable("computerVisionApiKey");
-    ```
-
-8. Open **SendToEventGrid.cs**. This class is responsible for sending an Event to the Event Grid topic, including the event type and license plate data. Event listeners will use the event type to filter and act on the events they need to process. Make note of the event types defined here (the first parameter passed into the Send method), as they will be used later on when creating new functions in the second Function App you provisioned earlier.
-
-9. The following code represents the completed tasks in `SendToEventGrid.cs`:
-
-    ```csharp
-    // TODO 3: Modify send method to include the proper eventType name value for saving plate data.
-    await Send("savePlateData", "TollBooth/CustomerService", data);
-
-    // TODO 4: Modify send method to include the proper eventType name value for queuing plate for manual review.
-    await Send("queuePlateForManualCheckup", "TollBooth/CustomerService", data);
-    ```
-
-    > **Note**: TODOs 5, 6, and 7 will be completed in later steps of the guide.
-
-### Task 5: Publish the Function App from Visual Studio
-
-In this task, you will publish the Function App from the starter project in Visual Studio to the existing Function App you provisioned in Azure.
-
-#### Using the lab VM
-
-![](2020-01-19-23-00-41.png)
-
-![](2020-01-19-23-01-50.png)
-
-![](2020-01-19-23-06-57.png)
-
-Open Edge and navigate to
-
-Extract the downloaded files
-
-### Task 5 steps
-
-1. Navigate to the **TollBooth** project using the Solution Explorer of Visual Studio.
-
-2. Right-click the **TollBooth** project and select **Publish** from the context menu.
-
-    ![In Solution Explorer, TollBooth is selected, and in its right-click menu, Publish is selected.](media/image39.png 'Solution Explorer ')
-
-3. In the Pick a Publish Target window that appears, make sure **Azure Functions Consumption Plan** is selected, choose the **Select Existing** radio button, check the **Run from package file** checkbox, then select **Publish**.
-
-    ![In the Publish window, the Azure Function App tile is selected. Under this, both the Select Existing radio button and the Publish button are selected.](media/vs-publish-function.png 'Publish window')
-
-    > **Note**: If you do not see the ability to publish to an Azure Function, you may need to update your Visual Studio instance.
-
-4. In the App Service form, select your **Subscription**, select **Resource Group** under **View**, then expand your **ServerlessArchitecture** resource group and select the Function App whose name ends with **FunctionApp**.
-
-5. Whatever you named the Function App when you provisioned it is fine. Just make sure it is the same one to which you applied the Application Settings in Task 1 of this exercise.
-
-    ![In the App Service form, Resource Group displays in the View field, and in the tree-view below, the ServerlessArchitecture folder is expanded, and TollBoothFunctionApp is selected.](media/image41.png 'App Service form')
-
-6. After you select the Function App, select **OK**.
-
-    > **Note**: If prompted to update the functions version on Azure, select **Yes**.
-
-7. Select **Publish** to start the process. Watch the Output window in Visual Studio as the Function App publishes. When it is finished, you should see a message that says, `========== Publish: 1 succeeded, 0 failed, 0 skipped ==========`.
-
-8. Using a new tab or instance of your browser navigate to the Azure portal, <http://portal.azure.com>.
-
-9. Open the **ServerlessArchitecture** resource group, then select the Azure Function App to which you just published.
-
-10. Expand the functions underneath your Function App in the menu. You should see both functions you just published from the Visual Studio solution listed.
+3. Expand the functions underneath your Function App in the menu. You should see both functions you just published from the Visual Studio solution listed.
 
     ![In the TollBoothFunctionApp blade, in the pane, both TollBoothFunctionApp, and Functions (Read Only) are expanded. Below Functions, two functions (ExportLicensePlates and ProcessImage) are called out.](media/image42.png 'TollBoothFunctionApp blade')
 
-11. Now we need to add an Event Grid subscription to the ProcessImage function, so the function is triggered when new images are added to blob storage. Select the **ProcessImage** function, then select **Add Event Grid subscription**.
+4. Now we need to add an Event Grid subscription to the ProcessImage function, so the function is triggered when new images are added to blob storage. Select the **ProcessImage** function, then select **Add Event Grid subscription**.
 
     ![The ProcessImage function and the Add Event Grid subscription items are highlighted.](media/processimage-add-eg-sub.png 'ProcessImage function')
 
-12. On the **Create Event Subscription** blade, specify the following configuration options:
+5. On the **Create Event Subscription** blade, specify the following configuration options:
 
     a. **Name**: Unique value for the App name similar to **processimagesub** (ensure the green check mark appears).
 
@@ -231,7 +128,7 @@ Extract the downloaded files
 
     g. Leave Web Hook as the Endpoint Type.
 
-13. Leave the remaining fields at their default values and select **Create**.
+6. Leave the remaining fields at their default values and select **Create**.
 
     ![In the Create Event Subscription blade, fields are set to the previously defined settings.](media/processimage-eg-sub.png)
 
