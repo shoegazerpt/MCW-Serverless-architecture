@@ -165,6 +165,20 @@ There are a few components within the starter project that must be completed, ma
 
 In this task, you will publish the Function App from the starter project in Visual Studio to the existing Function App you provisioned in Azure.
 
+#### Using the lab VM
+
+![](2020-01-19-23-00-41.png)
+
+![](2020-01-19-23-01-50.png)
+
+![](2020-01-19-23-06-57.png)
+
+Open Edge and navigate to
+
+Extract the downloaded files
+
+### Task 5 steps
+
 1. Navigate to the **TollBooth** project using the Solution Explorer of Visual Studio.
 
 2. Right-click the **TollBooth** project and select **Publish** from the context menu.

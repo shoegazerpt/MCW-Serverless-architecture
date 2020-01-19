@@ -10,7 +10,7 @@ userId=$(az ad signed-in-user show --query objectId -o tsv)
 echo $rgName $rgLocation $templateUri
 
 echo ""
-echo "Creating deployment..."
+echo "Creating deployment (ignore if error)..."
 az group deployment create -n deploy -g $rgName --template-uri $templateUri --parameters "{\"tenantId\":{\"value\":\"$tenantId\"},\"userId\":{\"value\":\"$userId\"}}"
 
 echo ""
@@ -34,3 +34,14 @@ az functionapp config appsettings set -g $rgName -n $tollBoothFunctionName --set
 echo ""
 echo "Restarting functions..."
 az functionapp restart -g $rgName -n $tollBoothFunctionName
+
+# functionapp restart
+echo ""
+echo "Cloning repo..."
+git clone https://github.com/shoegazerpt/MCW-Serverless-architecture.git
+cd "MCW-Serverless-architecture/Hands-on lab/starter/TollBooth/TollBooth"
+
+# publish functions
+echo ""
+echo "Publishing functions"
+func azure functionapp publish $tollBoothFunctionName
