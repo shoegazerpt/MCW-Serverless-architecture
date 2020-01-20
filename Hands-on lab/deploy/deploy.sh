@@ -54,3 +54,10 @@ sleep 30
 echo ""
 echo "Publishing functions"
 func azure functionapp publish $tollBoothFunctionName
+
+$blobStorageConnectionPlain=$(jq -r '.[] | select(.name == "blobStorageConnectionPlain") | .value' appsettings.txt)
+echo ""
+echo "Blob storage connection: ${blobStorageConnectionPlain}"
+
+echo "cd \"MCW-Serverless-architecture/Hands-on lab/starter/TollBooth/UploadImagesCore\" && dotnet run -- \"${blobStorageConnectionPlain}\" \"../../license plates\" && cd ~" > uploadImages.sh
+chmod +x uploadImages.sh

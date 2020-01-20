@@ -377,6 +377,10 @@
         "eventsFunctionName": {
            "type": "string",
            "value": "[variables('functionEventsName')]"
+        },
+        "blobStorageConnectionPlain": {
+            "type": "string",
+            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('storageAccount')),'2015-05-01-preview').key1)]"
         }
     }
 }
