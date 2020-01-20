@@ -25,7 +25,7 @@ jq 'to_entries | map_values({ name: .key } + {slotSetting: false} + {value: .val
 
 tollBoothFunctionName=$(jq -r '.[] | select(.name == "tollBoothFunctionName") | .value' appsettings.txt)
 
-$blobStorageConnectionPlain=$(jq -r '.[] | select(.name == "blobStorageConnectionPlain") | .value' appsettings.txt)
+blobStorageConnectionPlain=$(jq -r '.[] | select(.name == "blobStorageConnectionPlain") | .value' appsettings.txt)
 echo ""
 echo "Blob storage connection: ${blobStorageConnectionPlain}"
 
