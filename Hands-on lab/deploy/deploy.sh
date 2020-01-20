@@ -25,6 +25,13 @@ jq 'to_entries | map_values({ name: .key } + {slotSetting: false} + {value: .val
 
 tollBoothFunctionName=$(jq -r '.[] | select(.name == "tollBoothFunctionName") | .value' appsettings.txt)
 
+$blobStorageConnectionPlain=$(jq -r '.[] | select(.name == "blobStorageConnectionPlain") | .value' appsettings.txt)
+echo ""
+echo "Blob storage connection: ${blobStorageConnectionPlain}"
+
+echo "cd \"MCW-Serverless-architecture/Hands-on lab/starter/TollBooth/UploadImagesCore\" && dotnet run -- \"${blobStorageConnectionPlain}\" \"../../license plates\" && cd ~" > uploadImages.sh
+chmod +x uploadImages.sh
+
 # functionapp settings
 echo ""
 echo "Setting function appsettings..."
@@ -55,9 +62,3 @@ echo ""
 echo "Publishing functions"
 func azure functionapp publish $tollBoothFunctionName
 
-$blobStorageConnectionPlain=$(jq -r '.[] | select(.name == "blobStorageConnectionPlain") | .value' appsettings.txt)
-echo ""
-echo "Blob storage connection: ${blobStorageConnectionPlain}"
-
-echo "cd \"MCW-Serverless-architecture/Hands-on lab/starter/TollBooth/UploadImagesCore\" && dotnet run -- \"${blobStorageConnectionPlain}\" \"../../license plates\" && cd ~" > uploadImages.sh
-chmod +x uploadImages.sh

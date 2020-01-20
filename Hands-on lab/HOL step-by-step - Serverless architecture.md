@@ -438,39 +438,27 @@ Now that Application Insights has been integrated into your Function Apps, you c
 
     ![In the TollBoothMonitor blade, in the pane under Investigate, Live Metrics Stream is selected. ](media/image65.png 'TollBoothMonitor blade')
 
-4. Leave the Live Metrics Stream open and go back to the starter app solution in Visual Studio.
+4. Leave the Live Metrics Stream open.
 
-5. Navigate to the **UploadImages** project using the Solution Explorer of Visual Studio. Right-click on **UploadImages**, then select **Properties**.
+5. Go back to your cloud shell and make sure you are on the root folder by typing `cd ~`. There should be a file called uploadImages.sh. Run it by typing `./uploadImages.sh`
 
-    ![In Solution Explorer, UploadImages is expanded, and Properties is selected.](media/vs-uploadimages.png 'Solution Explorer')
-
-6. Select **Debug** in the left-hand menu, then paste the connection string for your Blob storage account into the **Command line arguments** text field. This will ensure that the required connection string is added as an argument each time you run the application. Additionally, the combination of adding the value here and the `.gitignore` file included in the project directory will prevent the sensitive connection string from being added to your source code repository in a later step.
-
-    ![The Debug menu item and the command line arguments text field are highlighted.](media/vs-command-line-arguments.png "Properties - Debug")
-
-7. Save your changes.
-
-8. Right-click the **UploadImages** project in the Solution Explorer, then select **Debug** then **Start new instance**.
-
-    ![In Solution Explorer, UploadImages is selected. From the Debug menu, Start new instance is selected.](media/vs-debug-uploadimages.png 'Solution Explorer')
-
-9. When the console window appears, enter **1** and press **ENTER**. This uploads a handful of car photos to the images container of your Blob storage account.
+6. When the console window appears, enter **1** and press **ENTER**. This uploads a handful of car photos to the images container of your Blob storage account.
 
     ![A Command prompt window displays, showing images being uploaded.](media/image69.png 'Command prompt window')
 
-10. Switch back to your browser window with the Live Metrics Stream still open within Application Insights. You should start seeing new telemetry arrive, showing the number of servers online, the incoming request rate, CPU process amount, etc. You can select some of the sample telemetry in the list to the side to view output data.
+7. Switch back to your browser window with the Live Metrics Stream still open within Application Insights. You should start seeing new telemetry arrive, showing the number of servers online, the incoming request rate, CPU process amount, etc. You can select some of the sample telemetry in the list to the side to view output data.
 
     ![The Live Metrics Stream window displays information for the two online servers. Displaying line and point graphs include incoming requests, outgoing requests, and overvall health. To the side is a list of Sample Telemetry information. ](media/image70.png 'Live Metrics Stream window')
 
-11. Leave the Live Metrics Stream window open once again, and close the console window for the image upload. Debug the UploadImages project again, then enter **2** and press **ENTER**. This will upload 1,000 new photos.
+8. Leave the Live Metrics Stream window open once again, and close the console window for the image upload. Debug the UploadImages project again, then enter **2** and press **ENTER**. This will upload 1,000 new photos.
 
     ![the Command prompt window displays with image uploading information.](media/image71.png 'Command prompt window')
 
-12. Switch back to the Live Metrics Stream window and observe the activity as the photos are uploaded. It is possible that the process will run so efficiently that no more than two servers will be allocated at a time. You should also notice things such as a steady cadence for the Request Rate monitor, the Request Duration hovering below \~500ms second, and the Process CPU percentage roughly matching the Request Rate.
+9. Switch back to the Live Metrics Stream window and observe the activity as the photos are uploaded. It is possible that the process will run so efficiently that no more than two servers will be allocated at a time. You should also notice things such as a steady cadence for the Request Rate monitor, the Request Duration hovering below \~500ms second, and the Process CPU percentage roughly matching the Request Rate.
 
     ![In the Live Metrics Stream window, two servers are online. Under Incoming Requests. the Request Rate heartbeat line graph is selected, as is the Request Duration dot graph. Under Overall Health, the Process CPU heartbeat line graph is also selected, and a bi-directional dotted line points out the similarities between this graph and the Request Rate graph under Incoming Requests.](media/image72.png 'Live Metrics Stream window ')
 
-13. After this has run for a while, close the image uploader console window once again, but leave the Live Metrics Stream window open.
+10. After this has run for a while, close the image uploader console window once again, but leave the Live Metrics Stream window open.
 
 ### Task 4: Observe your functions dynamically scaling when resource-constrained
 
