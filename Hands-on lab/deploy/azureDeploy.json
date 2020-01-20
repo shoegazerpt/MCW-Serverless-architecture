@@ -289,7 +289,7 @@
                         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
                     ],
                     "properties": {
-                        "value": "[reference(variables('computerVisionName'), '2017-04-18').endpoint]"
+                        "value": "[concat(reference(variables('computerVisionName'), '2017-04-18').endpoint, '/vision/v2.0/ocr')]"
                     }
                 },
                 {
