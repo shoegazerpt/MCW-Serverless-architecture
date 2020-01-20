@@ -18,18 +18,23 @@ namespace UploadImagesCore
         private static List<MemoryStream> _sourceImages;
         private static readonly Random Random = new Random();
         private static string BlobStorageConnection;
+        private static string ImageFolder;
 
         static int Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length < 2)
             {
-                Console.WriteLine("You must pass the Blob Storage connection string as an argument when executing this application.");
+                Console.WriteLine("You must pass the Blob Storage connection string and images location as arguments when executing this application.");
                 Console.ReadLine();
                 return 1;
             }
             else
             {
                 BlobStorageConnection = args[0];
+                Console.WriteLine("ConnectionString: " + BlobStorageConnection);
+
+                ImageFolder = args[1];
+                Console.WriteLine("ImageFolder: " + ImageFolder);
             }
 
             int choice = 1;
@@ -120,14 +125,14 @@ namespace UploadImagesCore
             if (upload1000)
             {
                 _sourceImages =
-                    Directory.GetFiles(@"..\..\..\..\license plates\copyfrom\")
+                    Directory.GetFiles(Path.Combine(ImageFolder, "copyfrom"))
                         .Select(f => new MemoryStream(File.ReadAllBytes(f)))
                         .ToList();
             }
             else
             {
                 _sourceImages =
-                    Directory.GetFiles(@"..\..\..\..\license plates\")
+                    Directory.GetFiles(ImageFolder)
                         .Select(f => new MemoryStream(File.ReadAllBytes(f)))
                         .ToList();
             }
