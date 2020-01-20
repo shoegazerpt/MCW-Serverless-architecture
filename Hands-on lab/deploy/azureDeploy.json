@@ -332,7 +332,7 @@
     "outputs": {
         "computerVisionApiUrl": {
            "type": "string",
-           "value": "[concat('https://', variables('computerVisionName'), '.cognitiveservices.azure.com/vision/v2.0/ocr')]"
+           "value": "[reference(variables('computerVisionName'), '2017-04-18').endpoint]"
         },
         "computerVisionApiKey": {
            "type": "string",
