@@ -41,6 +41,15 @@ echo "Cloning repo..."
 git clone https://github.com/shoegazerpt/MCW-Serverless-architecture.git
 cd "MCW-Serverless-architecture/Hands-on lab/starter/TollBooth/TollBooth"
 
+echo ""
+echo "Current folder: "
+pwd
+ls -la
+
+echo ""
+echo "Pausing 30 secs..."
+sleep 30
+
 # publish functions
 echo ""
 echo "Publishing functions"
