@@ -129,8 +129,6 @@ Your function, application settings and managed identity have already been deplo
 
 ## Exercise 3: Create functions in the portal
 
-**Duration**: 45 minutes
-
 Create two new Azure Functions written in Node.js, using the Azure portal. These will be triggered by Event Grid and output to Azure Cosmos DB to save the results of license plate processing done by the ProcessImage function.
 
 ### Help references
@@ -355,8 +353,6 @@ In this task, you will add an Azure Cosmos DB output binding to the QueuePlateFo
 
 ## Exercise 4: Monitor your functions with Application Insights
 
-**Duration**: 45 minutes
-
 Application Insights can be integrated with Azure Function Apps to provide robust monitoring for your functions. In this exercise, you will provision a new Application Insights account and configure your Function Apps to send telemetry to it.
 
 ### Help references
@@ -483,8 +479,6 @@ In this task, you will change the Computer Vision API to the Free tier. This wil
 
 ## Exercise 5: Explore your data in Azure Cosmos DB
 
-**Duration**: 15 minutes
-
 In this exercise, you will use the Azure Cosmos DB Data Explorer in the portal to view saved license plate data.
 
 ### Help references
@@ -530,8 +524,6 @@ In this exercise, you will use the Azure Cosmos DB Data Explorer in the portal t
 
 ## Exercise 6: Create the data export workflow
 
-**Duration**: 30 minutes
-
 In this exercise, you create a new Logic App for your data export workflow. This Logic App will execute periodically and call your ExportLicensePlates function, then conditionally send an email if there were no records to export.
 
 ### Help references
@@ -570,11 +562,11 @@ In this exercise, you create a new Logic App for your data export workflow. This
 
     ![The Recurrence tile is selected in the Logic App Designer.](media/image82.png 'Logic App Designer')
 
-7. Enter **15** into the **Interval** box, and make sure Frequency is set to **Minute**. This can be set to an hour or some other interval, depending on business requirements.
+7. Enter **1** into the **Interval** box, and make sure Frequency is set to **Minute**. This can be set to an hour or some other interval, depending on business requirements.
+
+    ![Under Recurrence, the Interval field is set to 15, and the + New step button is selected.](2020-01-21-10-13-20.png 'Logic App Designer Recurrence section')
 
 8. Select **+ New step**.
-
-    ![Under Recurrence, the Interval field is set to 15, and the + New step button is selected.](media/image83.png 'Logic App Designer Recurrence section')
 
 9. Enter **Functions** in the filter box, then select the **Azure Functions** connector.
 
@@ -622,7 +614,7 @@ In this exercise, you create a new Logic App for your data export workflow. This
 
 18. Select **Save** in the tool bar to save your Logic App.
 
-19. Select **Run** to execute the Logic App. You should start receiving email alerts because the license plate data is not being exported. This is because we need to finish making changes to the ExportLicensePlates function so that it can extract the license plate data from Azure Cosmos DB, generate the CSV file, and upload it to Blob storage.
+19. Select **Run** to execute the Logic App. You should start receiving email alerts because some of the license plate data is not being exported.
 
     ![The Run button is selected on the Logic Apps Designer blade toolbar.](media/logicapp-start.png 'Logic Apps Designer blade')
 
@@ -630,29 +622,21 @@ In this exercise, you create a new Logic App for your data export workflow. This
 
     ![In the Logic App Designer, green check marks display next to Recurrence, ExportLicensePlates, Condition, and Send an email.](media/image96.png 'Logic App Designer ')
 
-21. The Logic App will continue to run in the background, executing every 15 minutes (or whichever interval you set) until you disable it. To disable the app, go to the **Overview** blade for the Logic App and select the **Disable** button on the taskbar.
+21. The Logic App will continue to run in the background, executing every minute (or whichever interval you set) until you disable it. 
 
-    ![The Disable button is selected on the TollBoothLogic blade top menu.](media/image97.png 'TollBoothLogic blade')
+## Exercise 8: Verify data export
 
-## Exercise 8: Rerun the workflow and verify data export
-
-**Duration**: 10 minutes
-
-With the latest code changes in place, run your Logic App and verify that the files are successfully exported.
+Verify that the files are successfully exported.
 
 ### Task 1: Run the Logic App
 
 1. Open your ServerlessArchitecture resource group in the Azure portal, then select your Logic App.
 
-2. From the **Overview** blade, select **Enable**.
+2. From the **Overview** blade, view **Runs History**.
 
-    ![In the TollBoothLogic, the Enable enable button is selected.](media/image113.png 'TollBoothLogic blade')
+    ![In the TollBoothLogic, Runs History.](2020-01-21-10-10-38.png 'TollBoothLogic blade')
 
-3. Now select **Run Trigger**, then select **Recurrence** to immediately execute your workflow.
-
-    ![In the TollBoothLogic blade, Run Trigger / Recurrence is selected.](media/image114.png 'TollBoothLogic blade')
-
-4. Select the **Refresh** button next to the Run Trigger button to refresh your run history. Select the latest run history item. If the expression result for the condition is **true**, then that means the CSV file should've been exported to Blob storage. Be sure to disable the Logic App so it doesn't keep sending you emails every 15 minutes. Please note that it may take longer than expected to start running, in some cases.
+4. Select the **Refresh** button next to the Run Trigger button to refresh your run history. Select the latest run history item. If the expression result for the condition is **true**, then that means the CSV file should've been exported to Blob storage. Be sure to disable the Logic App so it doesn't keep sending you emails every minute. Please note that it may take longer than expected to start running, in some cases.
 
     ![In Logic App Designer, in the Condition section, under Inputs, true is circled.](media/image115.png 'Logic App Designer ')
 
